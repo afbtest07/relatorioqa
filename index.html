@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Relatórios</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .tab {
+      overflow: hidden;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .tab button {
+      background-color: inherit;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Sistema de Relatórios</h1>
+
+  <!-- Abas -->
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'userStoryTab')" id="defaultOpen">Relatório de User Stories</button>
+    <button class="tablinks" onclick="openTab(event, 'bugTab')">Relatório de Bugs</button>
+  </div>
+
+  <!-- Conteúdo da aba de User Stories -->
+  <div id="userStoryTab" class="tab-content">
+    <h2>Gerar Relatório de User Stories</h2>
+
+    <label for="userStory">Número da User Story:</label>
+    <input type="text" id="userStory" placeholder="Digite o número da User Story">
+
+    <label for="userStory">Data:</label>
+    <input type="text" id="userStory" placeholder="Data">
+
+    <label for="projeto">Projeto:</label>
+    <select id="projeto">
+      <option value="TIM">TIM</option>
+      <option value="Tradein">Tradein</option>
+      <option value="Sav">Sav</option>
+      <option value="Trocafy">Trocafy</option>
+      <option value="Modcom">Modcom</option>
+    </select>
+
+    <label for="motivo">Motivo:</label>
+    <textarea id="motivo" placeholder="Descreva o motivo"></textarea>
+
+    <label for="status">Status:</label>
+    <select id="status">
+      <option value="Impedimento">Impedimento</option>
+      <option value="Atraso">Atraso</option>
+    </select>
+
+    <button onclick="gerarRelatorioUserStory()">Baixar Relatório de User Stories</button>
+  </div>
+
+  <!-- Conteúdo da aba de Bugs -->
+  <div id="bugTab" class="tab-content">
+    <h2>Inserir Relatório de Bugs</h2>
+
+    <label for="bugTitle">Título do Bug:</label>
+    <input type="text" id="bugTitle" placeholder="Digite o título do bug">
+
+    <label for="projetoBug">Projeto:</label>
+    <select id="projetoBug">
+      <option value="TIM">TIM</option>
+      <option value="Tradein">Tradein</option>
+      <option value="Sav">Sav</option>
+      <option value="Trocafy">Trocafy</option>
+      <option value="Modcom">Modcom</option>
+    </select>
+
+    <label for="descricaoBug">Descrição do Bug:</label>
+    <textarea id="descricaoBug" placeholder="Descreva o bug"></textarea>
+
+    <label for="descricaoBug">Id US:</label>
+    <textarea id="descricaoBug" placeholder="Id US"></textarea>
+
+    <label for="descricaoBug">Sprint:</label>
+    <textarea id="descricaoBug" placeholder="Sprint"></textarea>
+
+    <label for="prioridadeBug">Prioridade:</label>
+    <select id="prioridadeBug">
+      <option value="Baixa">Baixa</option>
+      <option value="Média">Média</option>
+      <option value="Alta">Alta</option>
+      <option value="Crítica">Crítica</option>
+    </select>
+
+    <label for="statusBug">Ambiente:</label>
+    <select id="statusBug">
+      <option value="Novo">HMG</option>
+      <option value="Em andamento">PROD</option>
+      
+    </select>
+
+    <button onclick="gerarRelatorioBug()">Baixar Relatório de Bugs</button>
+  </div>
+
+  <script>
+    // Função para alternar entre as abas
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+
+      // Esconder todos os conteúdos das abas
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+
+      // Remover a classe "active" dos botões das abas
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Mostrar o conteúdo da aba atual e adicionar a classe "active" ao botão
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Abrir a aba de User Stories por padrão
+    document.getElementById("defaultOpen").click();
+
+    // Função para gerar relatório de User Stories
+    function gerarRelatorioUserStory() {
+      const userStory = document.getElementById("userStory").value;
+      const projeto = document.getElementById("projeto").value;
+      const motivo = document.getElementById("motivo").value;
+      const status = document.getElementById("status").value;
+
+      if (!userStory || !motivo) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      const data = [
+        ["Número da User Story", "Projeto", "Motivo", "Status"],
+        [userStory, projeto, motivo, status]
+      ];
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, "Relatório User Stories");
+
+      XLSX.writeFile(wb, "relatorio_user_story.xlsx");
+    }
+
+    // Função para gerar relatório de Bugs
+    function gerarRelatorioBug() {
+      const bugTitle = document.getElementById("bugTitle").value;
+      const projeto = document.getElementById("projetoBug").value;
+      const descricao = document.getElementById("descricaoBug").value;
+      const prioridade = document.getElementById("prioridadeBug").value;
+      const status = document.getElementById("statusBug").value;
+
+      if (!bugTitle || !descricao) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      const data = [
+        ["Título do Bug", "Projeto", "Descrição", "Prioridade", "Status"],
+        [bugTitle, projeto, descricao, prioridade, status]
+      ];
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, "Relatório Bugs");
+
+      XLSX.writeFile(wb, "relatorio_bugs.xlsx");
+    }
+  </script>
+
+</body>
+</html>
