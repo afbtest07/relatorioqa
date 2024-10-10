@@ -51,9 +51,16 @@
     }
 
     input, select, textarea {
-      width: 100%;
+      width: 300px; /* Define uma largura fixa */
       padding: 8px;
       margin: 5px 0;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      width: 400px; /* Define uma largura fixa */
+      padding: 10px;
+      margin: 9px 0;
       box-sizing: border-box;
     }
 
@@ -61,7 +68,7 @@
       margin-top: 15px;
       padding: 10px;
       background-color: #4CAF50;
-      color: white;
+      color: black;
       border: none;
       cursor: pointer;
     }
@@ -88,8 +95,8 @@
     <label for="userStory">Número da User Story:</label>
     <input type="text" id="userStory" placeholder="Digite o número da User Story">
 
-    <label for="userStory">Data:</label>
-    <input type="text" id="userStory" placeholder="Data">
+    <label for="dataUserStory">Data:</label>
+    <input type="text" id="dataUserStory" placeholder="Data">
 
     <label for="projeto">Projeto:</label>
     <select id="projeto">
@@ -107,9 +114,10 @@
     <select id="status">
       <option value="Impedimento">Impedimento</option>
       <option value="Atraso">Atraso</option>
+      <option value="Escopo">Escopo</option>
     </select>
 
-    <button onclick="gerarRelatorioUserStory()">Baixar Relatório de User Stories</button>
+    <button onclick="adicionarUserStory()">Adicionar caso</button>
   </div>
 
   <!-- Conteúdo da aba de Bugs -->
@@ -131,11 +139,11 @@
     <label for="descricaoBug">Descrição do Bug:</label>
     <textarea id="descricaoBug" placeholder="Descreva o bug"></textarea>
 
-    <label for="descricaoBug">Id US:</label>
-    <textarea id="descricaoBug" placeholder="Id US"></textarea>
+    <label for="idUS">Id US:</label>
+    <input type="text" id="idUS" placeholder="Id US">
 
-    <label for="descricaoBug">Sprint:</label>
-    <textarea id="descricaoBug" placeholder="Sprint"></textarea>
+    <label for="sprint">Sprint:</label>
+    <input type="text" id="sprint" placeholder="Sprint">
 
     <label for="prioridadeBug">Prioridade:</label>
     <select id="prioridadeBug">
@@ -145,17 +153,21 @@
       <option value="Crítica">Crítica</option>
     </select>
 
-    <label for="statusBug">Ambiente:</label>
-    <select id="statusBug">
-      <option value="Novo">HMG</option>
-      <option value="Em andamento">PROD</option>
-      
+    <label for="ambienteBug">Ambiente:</label>
+    <select id="ambienteBug">
+      <option value="HMG">HMG</option>
+      <option value="PROD">PROD</option>
     </select>
 
-    <button onclick="gerarRelatorioBug()">Baixar Relatório de Bugs</button>
+    <button onclick="adicionarBug()">Adicionar Bug</button>
   </div>
 
+  <button onclick="gerarRelatorioFinal()">Gerar Relatório Final</button>
+
   <script>
+    let userStories = [];
+    let bugs = [];
+
     // Função para alternar entre as abas
     function openTab(evt, tabName) {
       var i, tabcontent, tablinks;
@@ -180,9 +192,10 @@
     // Abrir a aba de User Stories por padrão
     document.getElementById("defaultOpen").click();
 
-    // Função para gerar relatório de User Stories
-    function gerarRelatorioUserStory() {
+    // Função para adicionar User Story
+    function adicionarUserStory() {
       const userStory = document.getElementById("userStory").value;
+      const data = document.getElementById("dataUserStory").value;
       const projeto = document.getElementById("projeto").value;
       const motivo = document.getElementById("motivo").value;
       const status = document.getElementById("status").value;
@@ -192,41 +205,57 @@
         return;
       }
 
-      const data = [
-        ["Número da User Story", "Projeto", "Motivo", "Status"],
-        [userStory, projeto, motivo, status]
-      ];
+      userStories.push({ userStory, data, projeto, motivo, status });
+      alert("User Story adicionada com sucesso!");
 
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, "Relatório User Stories");
-
-      XLSX.writeFile(wb, "relatorio_user_story.xlsx");
+      // Limpar os campos após adicionar
+      document.getElementById("userStory").value = "";
+      document.getElementById("dataUserStory").value = "";
+      document.getElementById("motivo").value = "";
+      document.getElementById("status").value = "Impedimento"; // Reset to default
     }
 
-    // Função para gerar relatório de Bugs
-    function gerarRelatorioBug() {
+    // Função para adicionar Bug
+    function adicionarBug() {
       const bugTitle = document.getElementById("bugTitle").value;
       const projeto = document.getElementById("projetoBug").value;
       const descricao = document.getElementById("descricaoBug").value;
+      const idUS = document.getElementById("idUS").value;
+      const sprint = document.getElementById("sprint").value;
       const prioridade = document.getElementById("prioridadeBug").value;
-      const status = document.getElementById("statusBug").value;
+      const ambiente = document.getElementById("ambienteBug").value;
 
       if (!bugTitle || !descricao) {
         alert("Por favor, preencha todos os campos.");
         return;
       }
 
-      const data = [
-        ["Título do Bug", "Projeto", "Descrição", "Prioridade", "Status"],
-        [bugTitle, projeto, descricao, prioridade, status]
-      ];
+      bugs.push({ bugTitle, projeto, descricao, idUS, sprint, prioridade, ambiente });
+      alert("Bug adicionado com sucesso!");
 
+      // Limpar os campos após adicionar
+      document.getElementById("bugTitle").value = "";
+      document.getElementById("descricaoBug").value = "";
+      document.getElementById("idUS").value = "";
+      document.getElementById("sprint").value = "";
+      document.getElementById("prioridadeBug").value = "Baixa"; // Reset to default
+      document.getElementById("ambienteBug").value = "HMG"; // Reset to default
+    }
+
+    // Função para gerar o relatório final
+    function gerarRelatorioFinal() {
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, "Relatório Bugs");
 
-      XLSX.writeFile(wb, "relatorio_bugs.xlsx");
+      // Gerar planilha de User Stories
+      const wsUserStories = XLSX.utils.json_to_sheet(userStories);
+      XLSX.utils.book_append_sheet(wb, wsUserStories, "User Stories");
+
+      // Gerar planilha de Bugs
+      const wsBugs = XLSX.utils.json_to_sheet(bugs);
+      XLSX.utils.book_append_sheet(wb, wsBugs, "Bugs");
+
+      // Salvar o arquivo Excel
+      XLSX.writeFile(wb, "relatorio_final.xlsx");
     }
   </script>
 
