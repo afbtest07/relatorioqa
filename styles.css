@@ -1,0 +1,41 @@
+/* Ajustar a largura dos inputs */
+input[type="text"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px; /* Tamanho de fonte menor */
+  }
+  
+  /* Reduzir o tamanho do botão */
+  button {
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px; /* Tamanho de fonte menor */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Ajustar o título */
+  h2 {
+    font-size: 24px; /* Título menor */
+    margin-top: 20px;
+  }
+  
+  /* Melhorar o layout geral */
+  .container {
+    padding: 20px;
+    max-width: 800px; /* Largura máxima do container */
+    margin: 0 auto; /* Centralizar o conteúdo */
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  
